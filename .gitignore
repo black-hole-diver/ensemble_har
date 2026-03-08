@@ -13,8 +13,8 @@ catboost_info
 src/movements/*
 src/movements
 !data/raw/.gitkeep
-models/*.pkl
-models/*.joblib
+# models/*.pkl
+# models/*.joblib
 src/__pycache__
 tests/__pycache__
 src/__pycache__/*

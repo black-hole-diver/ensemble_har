@@ -33,3 +33,12 @@ def extract_batch_features(windows) -> np.ndarray:
     Processes a list or array of windows and returns a 2D feature matrix.
     """
     return np.array([extract_physics(w) for w in windows])
+
+def clean_class_name(raw_label) -> str:
+    """
+    Cleans enum strings or objects to return just the readable name.
+    Example: 'MovementClass.CRAWLING_PLAY' -> 'CRAWLING_PLAY'
+    """
+    if hasattr(raw_label, 'value'):
+        return str(raw_label.value)
+    return str(raw_label).split('.')[-1]

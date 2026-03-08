@@ -1,6 +1,6 @@
 from src.settings import Config, MAPPING, BLACKLIST, FileNames
 from src.data_processor import DataProcessor
-from src.utils import extract_batch_features
+from src.utils import extract_batch_features, clean_class_name
 
 import numpy as np
 import optuna
@@ -31,7 +31,7 @@ class EliteEnsembleManager:
     def prepare_and_augment(self):
         print("--- 1. Extracting and Mapping ---")
         X, y = self.processor.process_all_files(Config.RAW_DATA_DIR)
-        y_mapped = np.array([self.mapping.get(label, label) for label in y])
+        y_mapped = np.array([clean_class_name(self.mapping.get(label, label)) for label in y])
 
         keep_indices = [i for i, label in enumerate(y_mapped) if label not in self.blacklist]
         X_clean = X[keep_indices]
