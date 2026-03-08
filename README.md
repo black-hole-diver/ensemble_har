@@ -51,7 +51,7 @@ Instead of guessing, we bypassed the ML and used Cosine Similarity on the 72-fea
 * **The Footwear Re-merge:** Splitting shoe-tying by "same hand" vs. "opposite hand" caused accuracy to drop to 67%. Merging them back into a single **`Footwear`** class restored it to 82%.
 
 ### 3. Killing Variance (Optuna & SMOTE)
-Learning curves proved the initial model was achieving 0.00 Training Loss (memorizing the specific children) but flatlining on Validation.
+Learning curves proved the initial model was achieving 0.00 Training Loss (memorizing the specific children) but flatlining on Validation. 
 * We implemented **SMOTE** to dynamically synthesize data for minority classes.
 * We ran **Optuna Bayesian Optimization** with aggressive regularization, specifically clamping `max_depth` (3-7) and forcing high `min_child_samples` (50-150) to mathematically forbid the trees from memorizing individual subjects.
 
@@ -63,9 +63,9 @@ Learning curves proved the initial model was achieving 0.00 Training Loss (memor
 har_production/
 ├── api/                       # FastREST API for live watch inference
 │   └── main.py
-├── data/                      # (Ignored in Git) Raw & processed CSVs
 ├── models/                    # Serialized .pkl artifacts (Model, Scaler, Encoder)
 ├── src/                       # Core ML source code
+|   ├── data/                  # (Ignored in Git) Raw & processed CSVs
 │   ├── config.py              # Centralized hyperparameters
 │   ├── data_processor.py      # Data loading and windowing
 │   └── train_elite.py         # The Optuna + Ensemble training script
@@ -75,3 +75,14 @@ har_production/
 ├── visuals/                   # Confusion matrices and learning curves
 ├── Dockerfile                 # Containerization for deployment
 └── requirements.txt           # Strict environment locking
+
+---
+
+# Getting Started
+## 1. Installation
+```bash
+git clone https://github.com/black-hole-diver/ensemble_har.git
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pre-commit install

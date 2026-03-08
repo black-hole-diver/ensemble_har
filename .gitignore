@@ -6,13 +6,19 @@ __pycache__/
 venv/
 env/
 .env
+catboost_info/*
+catboost_info
 
 # Models
-data/raw/*
-data/processed/*
+src/movements/*
+src/movements
 !data/raw/.gitkeep
 models/*.pkl
 models/*.joblib
+src/__pycache__
+tests/__pycache__
+src/__pycache__/*
+tests/__pycache__/*
 
 # OS files
 .DS_Store
@@ -21,4 +27,5 @@ Thumbs.db
 # Optuna
 *.sqlite3
 .ipnyb_checkpoints/
-
+.ruff_cache/
+.ruff_cache/*
