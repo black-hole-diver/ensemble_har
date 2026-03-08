@@ -50,10 +50,19 @@
             "name": "🍎 .mlpackage deployment",
             "type": "debugpy",
             "request": "launch",
-            "module": "api.quantize",
+            "module": "deployment.api.quantize",
             "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true
         },
+        {
+            "name": "☁️ HuggingFace Deployment Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "deployment.api.hugging_face_api_test",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
     ]
 }
