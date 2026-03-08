@@ -1,0 +1,27 @@
+ELITE ENSEMBLE Weighted F1: 0.9211
+                  precision    recall  f1-score   support
+
+            Ball       0.96      0.98      0.97        94
+        Clapping       1.00      0.92      0.96        37
+      Doorhandle       0.85      0.81      0.83        62
+         Drawing       0.97      0.97      0.97       537
+        Drinking       0.88      0.88      0.88        26
+           Dwarf       0.87      0.78      0.82        78
+       Face_wash       0.78      0.78      0.78         9
+         Goliath       0.95      0.94      0.94        64
+       Hand_wash       0.93      0.62      0.75        40
+       Hopscotch       0.92      0.96      0.94       163
+MovementClass.CR       0.99      0.98      0.98       340
+MovementClass.EA       0.91      0.94      0.93       361
+MovementClass.FO       0.82      0.88      0.84       217
+MovementClass.GL       0.89      0.88      0.88        48
+MovementClass.LE       0.88      0.96      0.91        45
+MovementClass.LI       0.91      0.83      0.87        76
+MovementClass.TA       0.89      0.90      0.89       423
+            Nose       0.93      0.91      0.92        46
+            Pray       0.83      0.59      0.69        17
+        Swimming       0.95      0.92      0.93        76
+
+        accuracy                           0.92      2759
+       macro avg       0.91      0.87      0.89      2759
+    weighted avg       0.92      0.92      0.92      2759
