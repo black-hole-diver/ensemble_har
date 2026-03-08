@@ -158,25 +158,24 @@ Attempting to classify these movements as distinct targets will force the model 
 1. **"Object Blindness" (The Reach-and-Grasp Anomaly)**
 **Problematic Classes:** Eating, Table_Play (Blocks/Pegs), Drawing.
 **The Physics**: When a child is seated at a table, all fine-motor tasks share an identical macro-trajectory: the hand rests, reaches forward, grasps or manipulates, and returns. The accelerometer flawlessly measures the trajectory, but it is "object blind." It cannot mathematically differentiate between a child holding a crayon (Drawing), bringing a cracker to their mouth (Eating), or stacking a block (Table_Play).
-**✅ The Fix**: These requires a secondary modality, such as a chest-mounted camera (egocentric vision) or smart objects with embedded RFID tags.
+* **✅ The Fix**: These requires a secondary modality, such as a chest-mounted camera (egocentric vision) or smart objects with embedded RFID tags.
 
 2. **The Kinematic Overlap (The "Crawling Zoo")**
 **Problematic Classes:** Bear_crawl, Crab_crawl, Spider_crawl, Rabbit_hop.
 **The Physics:** We mapped the 72-feature centroids for these movements and found a Cosine Similarity of >0.95. To a wrist sensor, all variations of crawling involve rhythmic, heavy-impact ground strikes with the palm, followed by a pendulum swing. The micro-variations of the child's leg positions (crab vs. bear) do not reliably propagate to the wrist sensor.
-**✅ The Fix:** These must be aggressively merged into a macro-class (Crawling_Play). Trying to split them halves your F1 score.
+* **✅ The Fix:** These must be aggressively merged into a macro-class (Crawling_Play). Trying to split them halves your F1 score.
 
 3. **Pose Ambiguity (Floor-Level Fiddling)**
 **Problematic Classes:** Footwear (Shoes/Socks) vs. Table_Play vs. Hand_wash.
 **The Physics:** Putting on shoes/socks while seated on the floor creates a downward-angled wrist orientation with jerky, pulling motions. Playing with blocks on the floor creates the exact same gravitational orientation and jerk vectors. Furthermore, the rapid, tight twisting gyro signature of leaning over a sink to rub hands together (Hand_wash) looks nearly identical to pulling on a stubborn sock.
-**✅ The Fix:** A secondary sensor on the chest or thigh is required to determine the child's global posture (e.g., torso angle) relative to gravity.
+* **✅ The Fix:** A secondary sensor on the chest or thigh is required to determine the child's global posture (e.g., torso angle) relative to gravity.
 
 4. **The Asymmetry Trap (Hand Independence)**
 **Problematic Classes:** Shoe_on_same vs. Shoe_on_other, Toothbrush_same vs. Toothbrush_other.
 The Physics: Attempting to classify whether a child is interacting with the left side or right side of their body using a sensor on only one wrist is mathematically volatile. Splitting these into distinct classes drops accuracy from the 80s to the 60s.
-**✅ The Fix:** Strip the symmetry labels. Merge them into Footwear and Oral_Care.
+* **✅ The Fix:** Strip the symmetry labels. Merge them into Footwear and Oral_Care.
 
 5. **The Transient Blacklist (Aperiodic Noise)**
 **Problematic Classes:** Puding_open, Snack_open, Cupboard, Lighting.
 **The Physics:** Our architecture uses a 2-second sliding window at 50Hz, which is optimized for periodic, repeating motions (like walking, crawling, or coloring). Opening a cupboard or flicking a light switch is a "transient" action—a single, 0.5-second burst of movement. When you slide a 2-second window over a 0.5-second action, the signal is diluted by 1.5 seconds of stationary noise, rendering it statistically invisible.
-
-**✅ The Fix**: These classes were permanently blacklisted from our evaluation. Detecting them requires an entirely different architecture, such as dynamic Time-Warping algorithms or trigger-based spike detection, rather than fixed-window ensembles.
+* **✅ The Fix**: These classes were permanently blacklisted from our evaluation. Detecting them requires an entirely different architecture, such as dynamic Time-Warping algorithms or trigger-based spike detection, rather than fixed-window ensembles.
