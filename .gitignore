@@ -29,3 +29,5 @@ Thumbs.db
 .ipnyb_checkpoints/
 .ruff_cache/
 .ruff_cache/*
+src/visuals/movement_visualizations/*
+src/visuals/movement_visualizations
