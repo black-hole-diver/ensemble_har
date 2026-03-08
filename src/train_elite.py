@@ -71,7 +71,7 @@ class EliteEnsembleManager:
             params = {
                 'objective': 'multiclass',
                 'num_class': len(self.label_encoder.classes_),
-                'n_estimators': trial.suggest_int('n_estimators', 300, 800), # Reduced max to prevent overfitting
+                'n_estimators': 1500,
                 'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.05, log=True),
                 'max_depth': trial.suggest_int('max_depth', 3, 7), # Forced shallower trees
                 'num_leaves': trial.suggest_int('num_leaves', 15, 63),
@@ -83,17 +83,29 @@ class EliteEnsembleManager:
                 'verbose': -1,
                 'random_state': 42
             }
-            X_opt_train, X_opt_val, y_opt_train, y_opt_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+            X_opt_train, X_opt_val, y_opt_train, y_opt_val = train_test_split(
+                X_train, y_train, test_size=0.2, random_state=42, stratify=y_train
+            )
             model = lgb.LGBMClassifier(**params)
-            model.fit(X_opt_train, y_opt_train)
+
+            model.fit(
+                X_opt_train, y_opt_train,
+                eval_set=[(X_opt_val, y_opt_val)],
+                callbacks=[lgb.early_stopping(stopping_rounds=20, verbose=False)]
+            )
+
+            trial.set_user_attr("optimal_trees", model.best_iteration_)
             y_pred = model.predict(X_opt_val)
             return f1_score(y_opt_val, y_pred, average='weighted')
 
         optuna.logging.set_verbosity(optuna.logging.WARNING)
         study = optuna.create_study(direction='maximize')
-        study.optimize(objective, n_trials=15) 
-        print(f"Best Regularized Params: {study.best_params}")
-        return study.best_params
+        study.optimize(objective, n_trials=15)
+
+        best_params = study.best_params
+        best_params['n_estimators'] = study.best_trial.user_attrs['optimal_trees']
+        print(f"✅ Best Params Found! Model perfectly converged at {best_params['n_estimators']} trees.")
+        return best_params
 
     def train_elite_ensemble(self, X_train, y_train, X_test, y_test, best_lgbm_params):
         """Add L2 Regularization to CatBoost to fight variance

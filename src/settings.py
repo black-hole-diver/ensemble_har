@@ -123,9 +123,11 @@ class Config:
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     ROOT_DIR = os.path.dirname(CURRENT_DIR)
 
+    output_path = '/after_early_stopping'
+
     RAW_DATA_DIR = os.path.join(CURRENT_DIR, 'movements')
-    VISUALS_DIR = os.path.join(CURRENT_DIR, 'visuals')
-    MODELS_DIR = os.path.join(ROOT_DIR, 'models')
+    VISUALS_DIR = os.path.join(CURRENT_DIR, 'visuals'+output_path)
+    MODELS_DIR = os.path.join(ROOT_DIR, 'models'+output_path)
 
     SAMPLING_RATE_HZ = 50
     WINDOW_SEC = 2

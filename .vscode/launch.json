@@ -1,0 +1,50 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "🧠 Train Elite Model",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.train_elite",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "🧪 Run Elite Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tests.elite_test",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "🌐 Start FastAPI API",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "api.main",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "📊 Generate Visuals",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.visualize_curves",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "👮 Inspect Bias/Variance",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tests.plot_bias_variance_curves",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+    ]
+}
