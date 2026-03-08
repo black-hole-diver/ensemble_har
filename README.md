@@ -6,6 +6,21 @@ By combining raw physics extraction, aggressively regularized stacked ensembles,
 
 ---
 
+## 🚀 Online API Deployment (HuggingFace Space)
+
+[![Hugging Face Space](https://img.shields.io/badge/🤗%20Hugging%20Face-Live%20API-blue)](https://huggingface.co/spaces/black-hole-diver/har_deployment)
+
+The machine learning inference engine for this project is fully containerized and currently live on Hugging Face Spaces.
+
+### 🌐 Live API Access
+* **Interactive Dashboard (Swagger UI):** [https://black-hole-diver-har-deployment.hf.space/docs](https://black-hole-diver-har-deployment.hf.space/docs)
+* **Direct Prediction Endpoint:** `POST https://black-hole-diver-har-deployment.hf.space/predict`
+* **Expected Payload:** A JSON dictionary `{"data": [...]}` containing a 2D array of strictly 100 timesteps by 9 sensor axes (2 seconds of data at 50Hz).
+
+*To simulate a real-time Apple Watch stream against this live API using local CSV files, run `python -m src.api.hugging_face_api_test.`. from python virtual environment!*
+
+---
+
 ## 🧠 System Architecture
 
 The inference engine processes a continuous stream of sensor data through a three-stage pipeline:
@@ -63,6 +78,7 @@ har_production/
 |   ├── export_to_watch/       # Exporting .mlmodel
 |       └── quantize.py
 |   |── api/                   # FastREST API for live watch inference
+|       ├── hugging_face_api_test.py      # Testing Hugging face api for live inference
 │       └── main.py
 ├── models/
 ├── src/
