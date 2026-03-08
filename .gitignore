@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+env/
+.env
+
+# Models
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+models/*.pkl
+models/*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optuna
+*.sqlite3
+.ipnyb_checkpoints/
+
