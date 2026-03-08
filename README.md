@@ -41,8 +41,8 @@ Tested across an extensive randomized live-stream simulation using unseen data.
 During the testing and deployment phase, several critical hardware constraints were discovered regarding sensor data collection:
 
 * **The Gravity Requirement:** The absolute highest precision is achieved only when **Gravity XYZ ($m/s^2$)** is explicitly isolated and provided. Raw generic accelerometer data without separated gravity vectors will severely degrade the model's performance.
-* **Hardware Compatibility:** **Samsung Galaxy Watch:** ❌  Out-of-the-box data collected from the Galaxy Watch 4 was found to be **NOT suitable** for this specific pipeline due to how it handles/exports gravity separation.
-  * ✅ **Apple Watch:** This is the officially supported target hardware for training and deployment. It natively provides the required `GRAVITY` and `MAGNITUDE` features. Do not substitute this hardware unless mathematically proven otherwise.
+* **Hardware Compatibility:** **Samsung Galaxy Watch:** ❌  Out-of-the-box data collected from the Galaxy Watch 4 was found to be **NOT suitable** for this specific pipeline due to how it handles/exports gravity separation. It calculate `MAGNITUDE` feature, which when compared to AppleWatch `GRAVITY` graphing, does not aligned.
+  * ✅ **Apple Watch:** This is the officially supported target hardware for training and deployment. It natively provides the required `GRAVITY` feature. Do not substitute this hardware unless mathematically proven otherwise.
 
 ---
 
