@@ -8,7 +8,7 @@ optuna               == 4.7.0
 joblib               == 1.5.3
 matplotlib           == 3.10.8
 seaborn              == 0.13.2
-ruff                 == 0.15.5 # Optional
-# fastapi              == NOT INSTALLED
-# uvicorn              == NOT INSTALLED
-# pydantic             == NOT INSTALLED
+ruff                 == 0.15.5# Optional
+fastapi              == 0.135.1
+uvicorn              == 0.41.0
+pydantic             == 2.12.5
