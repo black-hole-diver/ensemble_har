@@ -1,5 +1,5 @@
 from src.settings import Config, FileNames
-from src.utils import extract_window_features, clean_class_name
+from src.utils import extract_physics, clean_class_name
 
 import os
 import numpy as np
@@ -37,7 +37,7 @@ class LiveSmoothedPredictor:
         self.prediction_buffer = deque(maxlen=buffer_size)
 
     def predict(self, window_data: np.ndarray):
-        features = extract_window_features(window_data).reshape(1, -1)
+        features = extract_physics(window_data).reshape(1, -1)
 
         scaled = self.scaler.transform(features)
         pred_encoded = self.model.predict(scaled)
