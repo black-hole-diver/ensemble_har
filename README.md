@@ -59,8 +59,11 @@ If you are cloning this repository on a fresh machine, watch out for these commo
 
 ```text
 har_production/
-├── api/                       # FastREST API for live watch inference (to be implemented)
-│   └── main.py
+├── deployment/
+|   ├── export_to_watch/       # Exporting .mlmodel
+|       └── quantize.py
+|   |── api/                   # FastREST API for live watch inference
+│       └── main.py
 ├── models/
 ├── src/
 |   ├── movements/             # Ignored in Git

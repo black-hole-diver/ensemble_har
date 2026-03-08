@@ -46,5 +46,14 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
+        {
+            "name": "🍎 .mlpackage deployment",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "api.quantize",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
     ]
 }
