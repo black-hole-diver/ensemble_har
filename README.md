@@ -21,7 +21,7 @@ The machine learning inference engine for this project is fully containerized an
 
 *To simulate a real-time Apple Watch stream against this live API using local CSV files, run `python -m src.api.hugging_face_api_test.`. from python virtual environment!*
 
-![HuggingFace API In Progress](src/visuals/HF_API_in_progress.png)
+![HuggingFace API In Progress](src/visuals/hugging_face_api_response.png)
 
 ---
 
