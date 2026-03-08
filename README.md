@@ -4,6 +4,8 @@ An enterprise-grade, ultra-low-latency Machine Learning pipeline designed to cla
 
 By combining raw physics extraction, aggressively regularized stacked ensembles, and real-time temporal smoothing, this engine achieves **99.24% live accuracy** with a microscopic **15.87 ms** average inference time.
 
+![Ball in movement](src/visuals/movement_visualizations/Ball/Ball_1.png)
+
 ---
 
 ## 🚀 Online API Deployment (HuggingFace Space)
@@ -18,6 +20,8 @@ The machine learning inference engine for this project is fully containerized an
 * **Expected Payload:** A JSON dictionary `{"data": [...]}` containing a 2D array of strictly 100 timesteps by 9 sensor axes (2 seconds of data at 50Hz).
 
 *To simulate a real-time Apple Watch stream against this live API using local CSV files, run `python -m src.api.hugging_face_api_test.`. from python virtual environment!*
+
+![HuggingFace API In Progress](src/visuals/HF_API_in_progress.png)
 
 ---
 
@@ -160,6 +164,7 @@ To push past the 0.90 plateau and address severe model variance (memorization), 
 2. **Solving Class Similarity:** Diagnosed strong mathematical correlations via centroid mapping. Merged `Bear`, `Rabbit`, `Seal`, `Spider`, and `Crab` into a new `Crawling_Play` super-class. Merged `Book`, `Building_blocks`, and `Peck` into `Table_Play`.
 3. **Optuna Optimization:** Ran Bayesian optimization to hardcode aggressive regularization into the tree depths.
 4. **Temporal Smoothing:** Implemented a rolling sliding-window majority vote to eliminate single-frame misclassifications during live inference.
+![Balanced variance and bias](src/visuals/after_early_stopping/bias_variance_curve.png)
 
 ### 🏆 Final Benchmark Results
 * **Benign Overfitting Achieved:** The model successfully extracted the maximum physical limits of the data without spiking validation loss.
@@ -167,12 +172,15 @@ To push past the 0.90 plateau and address severe model variance (memorization), 
 * **Temporal Smoothing Gain:** +1.23%
 * **Final Live Smoothed Accuracy:** **99.45%**
 
+
 ---
 
 ## ⚠️ Known Limitations: The "Bad Movements"
 For researchers looking to expand upon this dataset, please be aware of the physical limitations of single-wrist IMU classification. During our Bayesian optimization and feature extraction phases, we identified several classes of movements that suffer from severe kinematic overlap.
 
 Attempting to classify these movements as distinct targets will force the model to memorize noise, artificially inflating validation loss.
+
+![Similarity Heat Map](src/visuals/before_early_stopping/similarity_heatmap.png)
 
 1. **"Object Blindness" (The Reach-and-Grasp Anomaly)**
 **Problematic Classes:** Eating, Table_Play (Blocks/Pegs), Drawing.

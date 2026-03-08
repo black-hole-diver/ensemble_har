@@ -63,6 +63,15 @@
             "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "🔥 Confusion Matrix Generate",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tests.confusion_matrix",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
