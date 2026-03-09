@@ -63,7 +63,7 @@ def simulate_watch_stream(csv_file_path):
     print("\n✅ Streaming complete!")
 
 if __name__ == "__main__":
-    target_csv = Config.RAW_DATA_DIR + "/Seal/Seal_1.csv"
+    target_csv = Config.RAW_DATA_DIR + "/Frog/Frog_1.csv"
     if not os.path.exists(target_csv):
         print(f"⚠️ File not found: {target_csv}")
     else:

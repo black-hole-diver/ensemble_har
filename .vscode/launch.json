@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "🧠 Train Elite Model",
             "type": "debugpy",
@@ -69,6 +70,15 @@
             "type": "debugpy",
             "request": "launch",
             "module": "tests.confusion_matrix",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "👊 Extensive API Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "deployment.api.extensive_api_test",
             "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true

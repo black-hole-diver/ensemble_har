@@ -1,0 +1,40 @@
+==================================================
+🏆 ELITE API TEST RESULTS
+==================================================
+📡 Total Windows Processed : 2890
+⚡ Average Network Latency : 373.53 ms per request
+
+🧠 Raw AI Stream Accuracy : 97.96%
+🌊 Smoothed Live Accuracy : 99.00%
+
+📊 Raw Weighted F1        : 0.9796
+🎖️ Smoothed Weighted F1   : 0.9900
+==================================================
+
+📑 DETAILED CLASSIFICATION REPORT (Smoothed)
+                precision    recall  f1-score   support
+
+          Ball       1.00      1.00      1.00        70
+      Clapping       1.00      1.00      1.00        21
+ Crawling_Play       1.00      0.99      0.99       167
+    Doorhandle       0.91      1.00      0.96        32
+       Drawing       1.00      1.00      1.00       740
+      Drinking       1.00      0.93      0.97        30
+         Dwarf       0.93      0.95      0.94        43
+        Eating       1.00      1.00      1.00       909
+     Face_wash       1.00      0.92      0.96        26
+      Footwear       0.99      0.98      0.98       225
+Glass_Handling       0.96      0.98      0.97        50
+       Goliath       0.98      0.94      0.96        51
+     Hand_wash       1.00      0.94      0.97        32
+     Hopscotch       0.97      1.00      0.98        83
+     Leg_Touch       1.00      0.95      0.97        55
+      Lighting       0.93      0.98      0.95        42
+          Nose       1.00      0.90      0.95        29
+          Pray       1.00      0.96      0.98        27
+      Swimming       1.00      1.00      1.00        27
+    Table_Play       0.96      1.00      0.98       231
+
+      accuracy                           0.99      2890
+     macro avg       0.98      0.97      0.98      2890
+  weighted avg       0.99      0.99      0.99      2890
