@@ -20,6 +20,9 @@ warnings.filterwarnings("ignore", message="X does not have valid feature names")
 
 class EliteEnsembleManager:
     def __init__(self):
+        os.makedirs(Config.MODELS_DIR, exist_ok=True)
+        os.makedirs(Config.VISUALS_DIR, exist_ok=True)
+
         self.processor = DataProcessor()
         self.label_encoder = LabelEncoder()
         self.scaler = StandardScaler()
@@ -131,14 +134,14 @@ class EliteEnsembleManager:
             min_samples_leaf=10,
             class_weight='balanced',
             random_state=42,
-            n_jobs=-1
+            n_jobs=1
         )
 
         stack_model = StackingClassifier(
             estimators=[('lgbm', lgbm), ('cat', cat), ('rf', rf)],
             final_estimator=LogisticRegression(max_iter=1000),
             cv=3,
-            n_jobs=-1
+            n_jobs=1
         )
 
         stack_model.fit(X_train, y_train)

@@ -73,15 +73,16 @@ class MovementClass(str, Enum):
     LIGHTING = 'Lighting'
     EATING = 'Eating'
     CRWLING_PLAY = 'Crawling_Play'
+    TOOTHBRUSH = 'Toothbrush'
+    OPEN_SNAKE = 'Open_snack'
 
 BLACKLIST = [
-    MovementClass.PUDING_OPEN,
-    MovementClass.SNACK_OPEN,
-    MovementClass.FROG,
-    MovementClass.LAME_FOX,
-    MovementClass.TOOTHBRUSH_SAME,
-    MovementClass.TOOTHBRUSH_OTHER,
-    MovementClass.CUPBOARD,
+    # MovementClass.PUDING_OPEN,
+    # MovementClass.SNACK_OPEN,
+    # #MovementClass.LAME_FOX,
+    # MovementClass.TOOTHBRUSH_SAME,
+    # MovementClass.TOOTHBRUSH_OTHER,
+    # MovementClass.CUPBOARD,
 ]
 
 MAPPING = {
@@ -96,6 +97,9 @@ MAPPING = {
 
     MovementClass.PUDING_EAT: MovementClass.EATING,
     MovementClass.SNACK_EAT: MovementClass.EATING,
+
+    MovementClass.PUDING_OPEN: MovementClass.OPEN_SNAKE,
+    MovementClass.SNACK_OPEN: MovementClass.OPEN_SNAKE,
 
     MovementClass.BEAR: MovementClass.CRWLING_PLAY,
     MovementClass.RABBIT: MovementClass.CRWLING_PLAY,
@@ -116,6 +120,9 @@ MAPPING = {
 
     MovementClass.KNEE_SAME: MovementClass.LEG_TOUCH,
     MovementClass.KNEE_OTHER: MovementClass.LEG_TOUCH,
+
+    MovementClass.TOOTHBRUSH_OTHER: MovementClass.TOOTHBRUSH,
+    MovementClass.TOOTHBRUSH_SAME: MovementClass.TOOTHBRUSH,
 }
 
 class Config:
@@ -123,7 +130,7 @@ class Config:
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     ROOT_DIR = os.path.dirname(CURRENT_DIR)
 
-    output_path = '/after_early_stopping'
+    output_path = '/after_early_stopping_and_integrate_all_classes'
 
     RAW_DATA_DIR = os.path.join(CURRENT_DIR, 'movements')
     VISUALS_DIR = os.path.join(CURRENT_DIR, 'visuals'+output_path)

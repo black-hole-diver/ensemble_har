@@ -82,6 +82,15 @@
             "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "🤗 Easy Hugging Face API Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "deployment.api.easy_hugging_face_api_test",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
