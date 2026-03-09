@@ -9,12 +9,14 @@ By combining raw physics extraction, aggressively regularized stacked ensembles,
 ---
 
 ## 🚀 Online API Deployment (HuggingFace Space)
-
 [![Hugging Face Space](https://img.shields.io/badge/🤗%20Hugging%20Face-Live%20API-blue)](https://huggingface.co/spaces/black-hole-diver/har_deployment)
+
+![Hugging Face Space](src/visuals/hugging_face_api_upgraded.png)
 
 The machine learning inference engine for this project is fully containerized and currently live on Hugging Face Spaces.
 
 ### 🌐 Live API Access
+* **Main Page:**: [https://huggingface.co/spaces/black-hole-diver/har_deployment](https://huggingface.co/spaces/black-hole-diver/har_deployment)
 * **Interactive Dashboard (Swagger UI):** [https://black-hole-diver-har-deployment.hf.space/docs](https://black-hole-diver-har-deployment.hf.space/docs)
 * **Direct Prediction Endpoint:** `POST https://black-hole-diver-har-deployment.hf.space/predict`
 * **Expected Payload:** A JSON dictionary `{"data": [...]}` containing a 2D array of strictly 100 timesteps by 9 sensor axes (2 seconds of data at 50Hz).
