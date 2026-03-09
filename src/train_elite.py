@@ -14,6 +14,7 @@ from sklearn.metrics import f1_score, classification_report
 from imblearn.over_sampling import SMOTE
 import joblib
 import os
+from datetime import datetime
 
 import warnings
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
@@ -147,12 +148,33 @@ class EliteEnsembleManager:
         stack_model.fit(X_train, y_train)
 
         print("\n--- Evaluation (Raw Accuracy, No Smoothing) ---")
+
         y_pred = stack_model.predict(X_test)
-        print(f"\nELITE ENSEMBLE Weighted F1: {f1_score(y_test, y_pred, average='weighted'):.4f}")
-        print(classification_report(y_test, y_pred, target_names=self.label_encoder.classes_))
+        weighted_f1 = f1_score(y_test, y_pred, average='weighted')
+        class_report = classification_report(y_test, y_pred, target_names=self.label_encoder.classes_)
+
+        print(f"\nELITE ENSEMBLE Weighted F1: {weighted_f1:.4f}")
+        print(class_report)
 
         print("\n--- Saving ML Artifacts to /models ---")
         os.makedirs(Config.MODELS_DIR, exist_ok=True)
+
+        logs_dir = os.path.join(Config.ROOT_DIR, 'training_logs')
+        os.makedirs(logs_dir, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file_path = os.path.join(logs_dir, f"elite_training_{timestamp}.txt")
+
+        with open(log_file_path, "w") as log_file:
+            log_file.write("=== ELITE ENSEMBLE TRAINING LOG ===\n")
+            log_file.write(f"Date/Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            log_file.write("-" * 40 + "\n")
+            log_file.write(f"Optuna Best LGBM Params:\n{best_lgbm_params}\n")
+            log_file.write("-" * 40 + "\n")
+            log_file.write(f"Weighted F1 Score: {weighted_f1:.4f}\n\n")
+            log_file.write("Classification Report:\n")
+            log_file.write(class_report)
+
+        print(f"📄 Training log saved to: {log_file_path}")
 
         model_path = os.path.join(Config.MODELS_DIR, FileNames.MODEL_NAME)
         labels_path = os.path.join(Config.MODELS_DIR, FileNames.LABELS_NAME)

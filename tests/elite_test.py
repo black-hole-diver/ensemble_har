@@ -139,4 +139,4 @@ class EliteRandomTester:
 if __name__ == "__main__":
     """Test 50 random files"""
     tester = EliteRandomTester()
-    tester.run_extensive_test(num_files=50)
+    tester.run_extensive_test(num_files=120)
