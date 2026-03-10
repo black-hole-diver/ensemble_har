@@ -1,0 +1,39 @@
+=== ELITE ENSEMBLE TRAINING LOG ===
+Date/Time: 2026-03-10 00:42:25
+----------------------------------------
+Optuna Best LGBM Params:
+{'learning_rate': 0.03971847300388952, 'max_depth': 5, 'num_leaves': 48, 'min_child_samples': 148, 'subsample': 0.5638365271803982, 'colsample_bytree': 0.6209516462596096, 'n_estimators': 437, 'verbose': -1, 'class_weight': 'balanced'}
+----------------------------------------
+Weighted F1 Score: 0.8822
+
+Classification Report:
+                precision    recall  f1-score   support
+
+          Ball       0.91      0.87      0.89        94
+      Clapping       1.00      0.92      0.96        37
+ Crawling_Play       0.93      0.98      0.96       340
+      Cupboard       0.90      0.75      0.82        12
+    Doorhandle       0.87      0.76      0.81        62
+       Drawing       0.95      0.97      0.96       537
+      Drinking       0.80      0.77      0.78        26
+         Dwarf       0.84      0.85      0.84        78
+  Dynamic_Jump       0.75      0.55      0.63        75
+        Eating       0.87      0.90      0.89       361
+     Face_wash       0.89      0.89      0.89         9
+      Footwear       0.85      0.84      0.85       217
+Glass_Handling       0.84      0.79      0.81        47
+       Goliath       0.94      0.97      0.95        64
+     Hand_wash       0.89      0.80      0.84        40
+     Hopscotch       0.90      0.93      0.92       163
+     Leg_Touch       0.93      0.84      0.88        45
+      Lighting       0.91      0.91      0.91        76
+          Nose       0.92      0.96      0.94        46
+    Open_snack       0.72      0.57      0.64        49
+          Pray       0.81      0.76      0.79        17
+      Swimming       0.99      0.95      0.97        76
+    Table_Play       0.81      0.84      0.83       423
+    Toothbrush       0.78      0.68      0.73        66
+
+      accuracy                           0.88      2960
+     macro avg       0.87      0.84      0.85      2960
+  weighted avg       0.88      0.88      0.88      2960
