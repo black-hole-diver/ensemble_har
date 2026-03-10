@@ -4,6 +4,7 @@ An enterprise-grade, ultra-low-latency Machine Learning pipeline designed to cla
 
 By combining raw physics extraction, aggressively regularized stacked ensembles, and real-time temporal smoothing, this engine achieves **99.24% live accuracy** with a microscopic **15.87 ms** average inference time.
 
+![Architecture](src/visuals/architecture.png)
 ![Ball in movement](src/visuals/movement_visualizations/Ball/Ball_1.png)
 
 ---
@@ -83,8 +84,10 @@ har_production/
 ├── deployment/
 |   ├── export_to_watch/       # Exporting .mlmodel
 |       └── quantize.py
-|   |── api/                   # FastREST API for live watch inference
-|       ├── hugging_face_api_test.py      # Testing Hugging face api for live inference
+|   |── api/                                  # FastREST API for live watch inference
+|       ├── hugging_face_api_test.py          # Testing Hugging face api for live inference
+|       ├── extensive_api_test.py             # STANDARD TEST | EXTENSIVE TEST | EASY TEST
+|       ├── easy_hugging_face_api_test.py
 │       └── main.py
 ├── models/
 ├── src/
@@ -92,15 +95,15 @@ har_production/
 |   ├── visuals/               # .png files to visualize graphs
 │   ├── settings.py            # Centralized hyperparameters
 │   ├── data_processor.py      # Data loading and windowing
-│   └── train_elite.py         # The Optuna + Ensemble training script
+│   └── train_elite.py         # Main training script
 ├── tests/
 |   ├── confusion_matrix.py    # Generate confusion matrix
 |   ├── diagnose_mappings.py   # Diagnose similarities of movements
 |   ├── diagnose_similarity.py
 │   ├── benchmark_latency.py   # Microsecond performance tester
 │   └── elite_test.py          # Extensive stream accuracy testing
-├── Dockerfile                 # to be implemented
-└── requirements.txt           # Strict environment locking
+├── Dockerfile
+└── requirements.txt
 ```
 ---
 
