@@ -1,198 +1,157 @@
-from src.settings import Config, MAPPING, BLACKLIST, FileNames
-from src.data_processor import DataProcessor
-from src.utils import extract_batch_features, clean_class_name
-
-from datetime import datetime
-import numpy as np
-import optuna
-import lightgbm as lgb
-from catboost import CatBoostClassifier
-from sklearn.ensemble import RandomForestClassifier, StackingClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import f1_score, classification_report
-from imblearn.over_sampling import SMOTE
-import joblib
+from enum import Enum
 import os
 
-import warnings
-warnings.filterwarnings("ignore", message="X does not have valid feature names")
+class SensorChannel(str, Enum):
+    """Enumeration for the 9 IMU sensor columns."""
+    UACC_X = 'uacc_x'
+    UACC_Y = 'uacc_y'
+    UACC_Z = 'uacc_z'
+    GYR_X = 'gyr_x'
+    GYR_Y = 'gyr_y'
+    GYR_Z = 'gyr_z'
+    GRAV_X = 'grav_x'
+    GRAV_Y = 'grav_y'
+    GRAV_Z = 'grav_z'
 
-class EliteEnsembleManager:
-    def __init__(self):
-        os.makedirs(Config.MODELS_DIR, exist_ok=True)
-        os.makedirs(Config.VISUALS_DIR, exist_ok=True)
+class FileNames(str, Enum):
+    MODEL_NAME = 'elite_ensemble.pkl'
+    LABELS_NAME = 'elite_labels.pkl'
+    SCALER_NAME = 'elite_scaler.pkl'
 
-        self.processor = DataProcessor()
-        self.label_encoder = LabelEncoder()
-        self.scaler = StandardScaler()
+class MovementClass(str, Enum):
+    """Enumeration for the 43 movement categories."""
+    BALL = 'Ball'
+    BEAR = 'Bear'
+    BOOK = 'Book'
+    BUILDING_BLOCKS = 'Building_blocks'
+    CLAPPING = 'Clapping'
+    CRAB = 'Crab'
+    CUPBOARD = 'Cupboard'
+    DOORHANDLE = 'Doorhandle'
+    DRAWING = 'Drawing'
+    DRINKING = 'Drinking'
+    DWARF = 'Dwarf'
+    FACE_WASH = 'Face_wash'
+    FROG = 'Frog'
+    GLASS_GRABBING = 'Glass_grabbing'
+    GLASS_LIFTING = 'Glass_lifting'
+    GLASS_TO_MOUTH = 'Glass_to_mouth'
+    GOLIATH = 'Goliath'
+    HAND_WASH = 'Hand_wash'
+    HOPSCOTCH = 'Hopscotch'
+    KNEE_OTHER = 'Knee_other'
+    KNEE_SAME = 'Knee_same'
+    LAME_FOX = 'Lame_fox'
+    LIGHT_OFF = 'Light_off'
+    LIGHT_ON = 'Light_on'
+    NOSE = 'Nose'
+    PECK = 'Peck'
+    PRAY = 'Pray'
+    PUDING_EAT = 'Puding_eat'
+    PUDING_OPEN = 'Puding_open'
+    RABBIT = 'Rabbit'
+    SEAL = 'Seal'
+    SHOE_OFF_OTHER = 'Shoe_off_other'
+    SHOE_OFF_SAME = 'Shoe_off_same'
+    SHOE_ON_OTHER = 'Shoe_on_other'
+    SHOE_ON_SAME = 'Shoe_on_same'
+    SNACK_EAT = 'Snack_eat'
+    SNACK_OPEN = 'Snack_open'
+    SOCK_OFF_OTHER = 'Sock_off_other'
+    SOCK_OFF_SAME = 'Sock_off_same'
+    SOCK_ON_OTHER = 'Sock_on_other'
+    SOCK_ON_SAME = 'Sock_on_same'
+    SPIDER = 'Spider'
+    SWIMMING = 'Swimming'
+    TOOTHBRUSH_OTHER = 'Toothbrush_other'
+    TOOTHBRUSH_SAME = 'Toothbrush_same'
+    # Superclass
+    FOOTWEAR = 'Footwear'
+    GLASS_HANDLING = 'Glass_Handling'
+    TABLE_PLAY = 'Table_Play'
+    LEG_TOUCH = 'Leg_Touch'
+    LIGHTING = 'Lighting'
+    EATING = 'Eating'
+    CRWLING_PLAY = 'Crawling_Play'
+    TOOTHBRUSH = 'Toothbrush'
+    OPEN_SNAKE = 'Open_snack'
+    DYNAMIC_JUMP = 'Dynamic_Jump'
 
-        self.mapping = MAPPING
+BLACKLIST = [
+    # MovementClass.PUDING_OPEN,
+    # MovementClass.SNACK_OPEN,
+    # #MovementClass.LAME_FOX,
+    # MovementClass.TOOTHBRUSH_SAME,
+    # MovementClass.TOOTHBRUSH_OTHER,
+    # MovementClass.CUPBOARD,
+]
 
-        self.blacklist = BLACKLIST
+MAPPING = {
+    MovementClass.SHOE_ON_SAME: MovementClass.FOOTWEAR,
+    MovementClass.SHOE_OFF_SAME: MovementClass.FOOTWEAR,
+    MovementClass.SOCK_ON_SAME: MovementClass.FOOTWEAR,
+    MovementClass.SOCK_OFF_SAME: MovementClass.FOOTWEAR,
+    MovementClass.SHOE_ON_OTHER: MovementClass.FOOTWEAR,
+    MovementClass.SHOE_OFF_OTHER: MovementClass.FOOTWEAR,
+    MovementClass.SOCK_ON_OTHER: MovementClass.FOOTWEAR,
+    MovementClass.SOCK_OFF_OTHER: MovementClass.FOOTWEAR,
 
-    def prepare_and_augment(self):
-        smote_strategy = {
-            'Face_wash': 400,
-            'Drinking': 350,
-            'Open_snack': 350,
-            'Lame_fox': 300
-        }
-        print("--- 1. Extracting and Mapping ---")
-        X, y = self.processor.process_all_files(Config.RAW_DATA_DIR)
-        y_mapped = np.array([clean_class_name(self.mapping.get(label, label)) for label in y])
+    MovementClass.PUDING_EAT: MovementClass.EATING,
+    MovementClass.SNACK_EAT: MovementClass.EATING,
 
-        keep_indices = [i for i, label in enumerate(y_mapped) if label not in self.blacklist]
-        X_clean = X[keep_indices]
-        y_clean = y_mapped[keep_indices]
+    MovementClass.PUDING_OPEN: MovementClass.OPEN_SNAKE,
+    MovementClass.SNACK_OPEN: MovementClass.OPEN_SNAKE,
 
-        y_encoded = self.label_encoder.fit_transform(y_clean)
-        y_encoded = np.asarray(y_encoded, dtype=int).reshape(-1)
-        X_features = extract_batch_features(X_clean)
+    MovementClass.BEAR: MovementClass.CRWLING_PLAY,
+    MovementClass.RABBIT: MovementClass.CRWLING_PLAY,
+    MovementClass.SEAL: MovementClass.CRWLING_PLAY,
+    MovementClass.SPIDER: MovementClass.CRWLING_PLAY,
+    MovementClass.CRAB: MovementClass.CRWLING_PLAY,
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_features, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
-        )
+    MovementClass.BOOK: MovementClass.TABLE_PLAY,
+    MovementClass.BUILDING_BLOCKS: MovementClass.TABLE_PLAY,
+    MovementClass.PECK: MovementClass.TABLE_PLAY,
 
-        print("--- 2. Dynamic Data Augmentation (SMOTE) ---")
-        unique, counts = np.unique(y_train, return_counts=True)
-        class_counts = dict(zip(unique, counts))
+    MovementClass.GLASS_GRABBING: MovementClass.GLASS_HANDLING,
+    MovementClass.GLASS_LIFTING: MovementClass.GLASS_HANDLING,
+    MovementClass.GLASS_TO_MOUTH: MovementClass.GLASS_HANDLING,
 
-        smote_strategy = {}
-        for cls, count in class_counts.items():
-            if count < 200:
-                smote_strategy[cls] = 200
+    MovementClass.LIGHT_ON: MovementClass.LIGHTING,
+    MovementClass.LIGHT_OFF: MovementClass.LIGHTING,
 
-        if smote_strategy:
-            smote = SMOTE(sampling_strategy=smote_strategy, k_neighbors=3, random_state=42)
-            X_train, y_train = smote.fit_resample(X_train, y_train)
-            boosted_names = [self.label_encoder.inverse_transform([c])[0] for c in smote_strategy.keys()]
-            print(f"Synthesized new data for: {boosted_names}")
+    MovementClass.KNEE_SAME: MovementClass.LEG_TOUCH,
+    MovementClass.KNEE_OTHER: MovementClass.LEG_TOUCH,
 
-        X_train_s = self.scaler.fit_transform(X_train)
-        X_test_s = self.scaler.transform(X_test)
+    MovementClass.TOOTHBRUSH_OTHER: MovementClass.TOOTHBRUSH,
+    MovementClass.TOOTHBRUSH_SAME: MovementClass.TOOTHBRUSH,
 
-        return X_train_s, X_test_s, y_train.flatten(), y_test.flatten()
+    MovementClass.LAME_FOX: MovementClass.DYNAMIC_JUMP,
+    MovementClass.FROG: MovementClass.DYNAMIC_JUMP,
+}
 
-    def optimize_lgbm(self, X_train, y_train):
-        print("--- 3. Optuna: Aggressive Variance Regularization ---")
-        def objective(trial):
-            params = {
-                'objective': 'multiclass',
-                'num_class': len(self.label_encoder.classes_),
-                'n_estimators': 1500,
-                'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.05, log=True),
-                'max_depth': trial.suggest_int('max_depth', 3, 7), # Forced shallower trees
-                'num_leaves': trial.suggest_int('num_leaves', 15, 63),
-                'min_child_samples': trial.suggest_int('min_child_samples', 50, 150), # THE VARIANCE KILLER
-                'subsample': trial.suggest_float('subsample', 0.5, 0.9), # Random row dropout
-                'colsample_bytree': trial.suggest_float('colsample_bytree', 0.5, 0.9), # Random feature dropout
-                'class_weight': 'balanced',
-                'n_jobs': -1,
-                'verbose': -1,
-                'random_state': 42
-            }
-            X_opt_train, X_opt_val, y_opt_train, y_opt_val = train_test_split(
-                X_train, y_train, test_size=0.2, random_state=42, stratify=y_train
-            )
-            model = lgb.LGBMClassifier(**params)
+class Config:
+    """Central configuration for paths and hyperparameters."""
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    ROOT_DIR = os.path.dirname(CURRENT_DIR)
 
-            model.fit(
-                X_opt_train, y_opt_train,
-                eval_set=[(X_opt_val, y_opt_val)],
-                callbacks=[lgb.early_stopping(stopping_rounds=20, verbose=False)]
-            )
+    output_path = '/version_2.0'
 
-            trial.set_user_attr("optimal_trees", model.best_iteration_)
-            y_pred = model.predict(X_opt_val)
-            return f1_score(y_opt_val, y_pred, average='weighted')
+    RAW_DATA_DIR = os.path.join(CURRENT_DIR, 'movements')
+    VISUALS_DIR = os.path.join(CURRENT_DIR, 'visuals'+output_path)
+    MODELS_DIR = os.path.join(ROOT_DIR, 'models'+output_path)
 
-        optuna.logging.set_verbosity(optuna.logging.WARNING)
-        study = optuna.create_study(direction='maximize')
-        study.optimize(objective, n_trials=15)
+    SAMPLING_RATE_HZ = 50
+    WINDOW_SEC = 2
+    OVERLAP_PCT = 0.5
 
-        best_params = study.best_params
-        best_params['n_estimators'] = study.best_trial.user_attrs['optimal_trees']
-        print(f"✅ Best Params Found! Model perfectly converged at {best_params['n_estimators']} trees.")
-        return best_params
+    BATCH_SIZE = 32
+    LEARNING_RATE = .001
+    EPOCHS = 40
 
-    def train_elite_ensemble(self, X_train, y_train, X_test, y_test, best_lgbm_params):
-        """Add L2 Regularization to CatBoost to fight variance
-        Shallower Random Forest"""
-        print("\n--- 4. Training Elite Ensemble ---")
-        best_lgbm_params['verbose'] = -1
-        best_lgbm_params['class_weight'] = 'balanced'
-        lgbm = lgb.LGBMClassifier(**best_lgbm_params)
+    WEIGHT_DECAY = 1e-4
 
-        cat = CatBoostClassifier(
-            iterations=600,
-            depth=5,
-            task_type='GPU',
-            learning_rate=0.05,
-            l2_leaf_reg=5,
-            auto_class_weights='Balanced',
-            random_state=42,
-            verbose=0
-        )
-
-        rf = RandomForestClassifier(
-            n_estimators=300,
-            max_depth=8,
-            min_samples_leaf=10,
-            class_weight='balanced',
-            random_state=42,
-            n_jobs=1
-        )
-
-        stack_model = StackingClassifier(
-            estimators=[('lgbm', lgbm), ('cat', cat), ('rf', rf)],
-            final_estimator=LogisticRegression(max_iter=1000),
-            cv=3,
-            n_jobs=1
-        )
-
-        stack_model.fit(X_train, y_train)
-
-        print("\n--- Evaluation (Raw Accuracy, No Smoothing) ---")
-
-        y_pred = stack_model.predict(X_test)
-        weighted_f1 = f1_score(y_test, y_pred, average='weighted')
-        class_report = classification_report(y_test, y_pred, target_names=self.label_encoder.classes_)
-
-        print(f"\nELITE ENSEMBLE Weighted F1: {weighted_f1:.4f}")
-        print(class_report)
-
-        print("\n--- Saving ML Artifacts to /models ---")
-        os.makedirs(Config.MODELS_DIR, exist_ok=True)
-
-        logs_dir = os.path.join(Config.ROOT_DIR, 'training_logs')
-        os.makedirs(logs_dir, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_file_path = os.path.join(logs_dir, f"elite_training_{timestamp}.txt")
-
-        with open(log_file_path, "w") as log_file:
-            log_file.write("=== ELITE ENSEMBLE TRAINING LOG ===\n")
-            log_file.write(f"Date/Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            log_file.write("-" * 40 + "\n")
-            log_file.write(f"Optuna Best LGBM Params:\n{best_lgbm_params}\n")
-            log_file.write("-" * 40 + "\n")
-            log_file.write(f"Weighted F1 Score: {weighted_f1:.4f}\n\n")
-            log_file.write("Classification Report:\n")
-            log_file.write(class_report)
-
-        print(f"📄 Training log saved to: {log_file_path}")
-
-        model_path = os.path.join(Config.MODELS_DIR, FileNames.MODEL_NAME)
-        labels_path = os.path.join(Config.MODELS_DIR, FileNames.LABELS_NAME)
-        scaler_path = os.path.join(Config.MODELS_DIR, FileNames.SCALER_NAME)
-
-        joblib.dump(stack_model, model_path)
-        joblib.dump(self.label_encoder, labels_path)
-        joblib.dump(self.scaler, scaler_path)
-
-if __name__ == "__main__":
-    manager = EliteEnsembleManager()
-    X_train_s, X_test_s, y_train, y_test = manager.prepare_and_augment()
-    best_params = manager.optimize_lgbm(X_train_s, y_train)
-    manager.train_elite_ensemble(X_train_s, y_train, X_test_s, y_test, best_params)
+    SENSOR_FEATURES = [
+        SensorChannel.UACC_X.value, SensorChannel.UACC_Y.value, SensorChannel.UACC_Z.value,
+        SensorChannel.GYR_X.value, SensorChannel.GYR_Y.value, SensorChannel.GYR_Z.value,
+        SensorChannel.GRAV_X.value, SensorChannel.GRAV_Y.value, SensorChannel.GRAV_Z.value
+    ]

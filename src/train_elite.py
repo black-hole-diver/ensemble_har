@@ -2,6 +2,7 @@ from src.settings import Config, MAPPING, BLACKLIST, FileNames
 from src.data_processor import DataProcessor
 from src.utils import extract_batch_features, clean_class_name
 
+from datetime import datetime
 import numpy as np
 import optuna
 import lightgbm as lgb
@@ -14,7 +15,6 @@ from sklearn.metrics import f1_score, classification_report
 from imblearn.over_sampling import SMOTE
 import joblib
 import os
-from datetime import datetime
 
 import warnings
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
@@ -33,6 +33,12 @@ class EliteEnsembleManager:
         self.blacklist = BLACKLIST
 
     def prepare_and_augment(self):
+        smote_strategy = {
+            'Face_wash': 400,
+            'Drinking': 350,
+            'Open_snack': 350,
+            'Lame_fox': 300
+        }
         print("--- 1. Extracting and Mapping ---")
         X, y = self.processor.process_all_files(Config.RAW_DATA_DIR)
         y_mapped = np.array([clean_class_name(self.mapping.get(label, label)) for label in y])
@@ -122,6 +128,7 @@ class EliteEnsembleManager:
         cat = CatBoostClassifier(
             iterations=600,
             depth=5,
+            task_type='GPU',
             learning_rate=0.05,
             l2_leaf_reg=5,
             auto_class_weights='Balanced',
